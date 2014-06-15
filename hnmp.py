@@ -50,7 +50,10 @@ def _convert_value_to_native(value):
     return value
 
 
-class CountingList(list):
+class CountingTuple(tuple):
+    """
+    A tuple that automatically counts its values.
+    """
     @cached_property
     def value_count(self):
         values = {}
@@ -165,8 +168,9 @@ class Table(object):
                 try:
                     c[column].append(value)
                 except KeyError:
-                    c[column] = CountingList()
-                    c[column].append(value)
+                    c[column] = [value]
+        for column in tuple(c.keys()):
+            c[column] = CountingTuple(c[column])
         return c
 
     @cached_property
