@@ -32,6 +32,9 @@ def cached_property(prop):
 
 
 def _convert_value_to_native(value):
+    """
+    Converts pysnmp objects into native Python objects.
+    """
     if isinstance(value, Counter32):
         return int(value.prettyPrint())
     if isinstance(value, Gauge32):
@@ -80,6 +83,9 @@ def mac_address(string):
 
 
 class SNMP(object):
+    """
+    Represents a 'connection' to a certain SNMP host.
+    """
     def __init__(self, host, port=161, community="public"):
         self._cmdgen = cmdgen.CommandGenerator()
         self.host = host
@@ -87,6 +93,9 @@ class SNMP(object):
         self.community = community
 
     def get(self, oid):
+        """
+        Get a single OID value.
+        """
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.getCmd(
                 cmdgen.CommunityData(self.community),
@@ -106,6 +115,9 @@ class SNMP(object):
         return value
 
     def table(self, oid, columns=None, column_value_mapping=None):
+        """
+        Get a table of values with the given OID prefix.
+        """
         base_oid = oid.strip(".")
 
         try:
