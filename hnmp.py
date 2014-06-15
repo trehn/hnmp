@@ -51,7 +51,15 @@ def _convert_value_to_native(value):
 
 
 class CountingList(list):
-    pass
+    @cached_property
+    def value_count(self):
+        values = {}
+        for value in self:
+            try:
+                values[value] += 1
+            except KeyError:
+                values[value] = 1
+        return values
 
 
 def ipv4_address(string):
