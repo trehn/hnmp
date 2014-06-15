@@ -1,4 +1,5 @@
 from datetime import timedelta
+from sys import version_info
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 from pysnmp.proto.rfc1902 import (
@@ -21,18 +22,27 @@ def _convert_value_to_native(value):
     if isinstance(value, IpAddress):
         return str(value.prettyPrint())
     if isinstance(value, OctetString):
-        return value.asOctets()
+        try:
+            return value.asOctets().decode(value.encoding)
+        except UnicodeDecodeError:
+            return value.asOctets()
     if isinstance(value, TimeTicks):
         return timedelta(seconds=int(value.prettyPrint()) / 100.0)
     return value
 
 
 def ipv4_address(string):
-    return ".".join([str(ord(c)) for c in string])
+    if version_info >= (3,0):
+        return ".".join([str(c) for c in string])
+    else:
+        return ".".join([str(ord(c)) for c in string])
 
 
 def mac_address(string):
-    return ":".join([hex(ord(c)).lstrip("0x").zfill(2) for c in string])
+    if version_info >= (3,0):
+        return ":".join([hex(c).lstrip("0x").zfill(2) for c in string])
+    else:
+        return ":".join([hex(ord(c)).lstrip("0x").zfill(2) for c in string])
 
 
 class SNMP(object):
