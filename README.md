@@ -61,4 +61,4 @@ datetime.timedelta(412, 29152)
 
 ------------------------------------------------------------------------
 
-![PyPI downloads](http://img.shields.io/pypi/dm/hnmp.svg) &nbsp; ![PyPI version](http://img.shields.io/pypi/v/hnmp.svg) &nbsp; ![Python 2.7](http://img.shields.io/badge/Python-2.7-green.svg) &nbsp; ![Python 3.x](http://img.shields.io/badge/Python-3.x-green.svg) &nbsp; ![PyPI license](http://img.shields.io/badge/License-GPLv3-red.svg)
+![PyPI downloads](http://img.shields.io/pypi/dm/hnmp.svg) &nbsp; ![PyPI version](http://img.shields.io/pypi/v/hnmp.svg) &nbsp; ![Python 2.7](http://img.shields.io/badge/Python-2.7-green.svg) &nbsp; ![Python 3.x](http://img.shields.io/badge/Python-3.x-green.svg) &nbsp; ![PyPI license](http://img.shields.io/badge/License-ISC-red.svg)
