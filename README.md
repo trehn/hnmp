@@ -3,7 +3,7 @@ HNMP is a high-level Python library to ease the pain of retrieving and processin
 HNMP is meant to be used like this:
 
 1. acquire MIB files (optional, some luck required)
-2. use a MIB browser application like [this freeish and cross-platform one](http://ireasoning.com/mibbrowser.shtml) by iREASONING to figure out the OIDs you're interested in
+2. use a MIB browser application like [this freeish and cross-platform one](http://ireasoning.com/mibbrowser.shtml) to figure out the numeric OIDs you're interested in
 3. use HNMP to retrieve your data and do some light processing
 4. put man on moon :rocket:
 
@@ -65,6 +65,17 @@ Install
 ```
 pip install hnmp
 ```
+
+FAQ
+---
+
+### Why doesn't HNMP support loading MIB files?
+
+Depending on MIB files would make the calling piece of code harder to distribute (since you need to include the MIBs, which may have some nasty non-free license attached to them). I consider MIB files a means to manually discover OIDs, nothing more. HNMP is biased towards use in scripts rather than full-blown applications. Having to use a library is bad enough for scripts, MIBs would just make your script even more unwieldy.
+
+### Why doesn't HNMP support SNMPv3?
+
+The need just hasn't arisen yet. Version 2c works pretty well for my purposes.
 
 ------------------------------------------------------------------------
 
