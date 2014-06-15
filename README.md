@@ -58,3 +58,7 @@ datetime.timedelta(412, 29152)
 >>> ipv4_address(snmp.get("1.3.6.1.4.1.9.9.513.1.1.1.1.11.[...]"))
 '10.1.2.3'
 ```
+
+------------------------------------------------------------------------
+
+![PyPI downloads](http://img.shields.io/pypi/dm/hnmp.svg) &nbsp; ![PyPI version](http://img.shields.io/pypi/v/hnmp.svg) &nbsp; ![Python 2.7](http://img.shields.io/badge/Python-2.7-green.svg) &nbsp; ![Python 3.x](http://img.shields.io/badge/Python-3.x-green.svg) &nbsp; ![PyPI license](http://img.shields.io/badge/License-GPLv3-red.svg)
