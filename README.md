@@ -47,4 +47,14 @@ datetime.timedelta(412, 29152)
 ("802.11g", "802.11n", "802.11n")
 >>> table.columns["protocol"].value_count
 {"802.11g": 1, "802.11n": 2}
+
+# helpers for converting MAC and IP addresses
+>>> from hnmp import ipv4_address, mac_address
+>>> raw_string = snmp.get("1.3.6.1.4.1.9.9.513.1.1.1.1.2.[...]")
+>>> raw_string
+'t&\xac\x1b\xe7\xa1'
+>>> mac_address(raw_string)
+'74:26:ac:1b:e7:a1'
+>>> ipv4_address(snmp.get("1.3.6.1.4.1.9.9.513.1.1.1.1.11.[...]"))
+'10.1.2.3'
 ```
