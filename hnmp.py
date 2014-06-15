@@ -1,4 +1,5 @@
 from datetime import timedelta
+from inspect import isgenerator
 from sys import version_info
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
@@ -10,6 +11,24 @@ from pysnmp.proto.rfc1902 import (
     OctetString,
     TimeTicks,
 )
+
+
+def cached_property(prop):
+    """
+    A replacement for the property decorator that will only compute the
+    attribute's value on the first call and serve cached copy from then
+    on.
+    """
+    def cache_wrapper(self):
+        if not hasattr(self, "_cache"):
+            self._cache = {}
+        if not prop.__name__ in self._cache:
+            return_value = prop(self)
+            if isgenerator(return_value):
+                return_value = tuple(return_value)
+            self._cache[prop.__name__] = return_value
+        return self._cache[prop.__name__]
+    return property(cache_wrapper)
 
 
 def _convert_value_to_native(value):
@@ -29,6 +48,10 @@ def _convert_value_to_native(value):
     if isinstance(value, TimeTicks):
         return timedelta(seconds=int(value.prettyPrint()) / 100.0)
     return value
+
+
+class CountingList(list):
+    pass
 
 
 def ipv4_address(string):
@@ -71,6 +94,77 @@ class SNMP(object):
         value = _convert_value_to_native(value)
         return value
 
+    def table(self, oid, columns=None, column_value_mapping=None):
+        base_oid = oid.strip(".")
+
+        try:
+            engine_error, pdu_error, pdu_error_index, obj_table = self._cmdgen.bulkCmd(
+                cmdgen.CommunityData(self.community),
+                cmdgen.UdpTransportTarget((self.host, self.port)),
+                0,
+                1,
+                oid,
+            )
+
+        except Exception as e:
+            raise SNMPError(e)
+        if engine_error:
+            raise SNMPError(engine_error)
+        if pdu_error:
+            raise SNMPError(pdu_error.prettyPrint())
+
+        while not obj_table[-1][0][0].prettyPrint().lstrip(".").startswith(base_oid + "."):
+            obj_table.pop()
+
+        t = Table(columns=columns, column_value_mapping=column_value_mapping)
+
+        for row in obj_table:
+            for name, value in row:
+                oid = name.prettyPrint().strip(".")
+                value = _convert_value_to_native(value)
+                column, row_id = oid[len(base_oid) + 1:].split(".", 1)
+                t._add_value(int(column), row_id, value)
+
+        return t
+
 
 class SNMPError(Exception):
     pass
+
+
+class Table(object):
+    def __init__(self, columns=None, column_value_mapping=None):
+        self._column_aliases = {} if columns is None else columns
+        self._column_value_mapping = {} if column_value_mapping is None else column_value_mapping
+        self._rows = {}
+
+    def _add_value(self, raw_column, row_id, value):
+        column = self._column_aliases.get(raw_column, raw_column)
+        try:
+            value = self._column_value_mapping[column][value]
+        except KeyError:
+            pass
+        try:
+            self._rows[row_id][column] = value
+        except KeyError:
+            self._rows[row_id] = {column: value}
+
+    @cached_property
+    def columns(self):
+        c = {}
+        for row_id, values in self._rows.items():
+            for column, value in values.items():
+                try:
+                    c[column].append(value)
+                except KeyError:
+                    c[column] = CountingList()
+                    c[column].append(value)
+        return c
+
+    @cached_property
+    def rows(self):
+        r = []
+        for row_id, values in self._rows.items():
+            values['_row_id'] = row_id
+            r.append(values)
+        return r
