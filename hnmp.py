@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 from pysnmp.proto.rfc1902 import (
+    Counter32,
     Gauge32,
     Integer,
     IpAddress,
@@ -11,6 +12,8 @@ from pysnmp.proto.rfc1902 import (
 
 
 def _convert_value_to_native(value):
+    if isinstance(value, Counter32):
+        return int(value.prettyPrint())
     if isinstance(value, Gauge32):
         return int(value.prettyPrint())
     if isinstance(value, Integer):
