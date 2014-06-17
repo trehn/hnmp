@@ -114,7 +114,8 @@ class SNMP(object):
         value = _convert_value_to_native(value)
         return value
 
-    def table(self, oid, columns=None, column_value_mapping=None):
+    def table(self, oid, columns=None, column_value_mapping=None, non_repeaters=0,
+              max_repetitions=20):
         """
         Get a table of values with the given OID prefix.
         """
@@ -124,8 +125,8 @@ class SNMP(object):
             engine_error, pdu_error, pdu_error_index, obj_table = self._cmdgen.bulkCmd(
                 cmdgen.CommunityData(self.community),
                 cmdgen.UdpTransportTarget((self.host, self.port)),
-                0,
-                1,
+                non_repeaters,
+                max_repetitions,
                 oid,
             )
 
