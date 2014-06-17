@@ -191,4 +191,4 @@ class Table(object):
         for row_id, values in self._rows.items():
             values['_row_id'] = row_id
             r.append(values)
-        return r
+        return tuple(r)
