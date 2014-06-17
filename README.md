@@ -13,7 +13,7 @@ Usage
 ```python
 >>> from hnmp import SNMP
 >>>
->>> snmp = SNMP("example.com")
+>>> snmp = SNMP("example.com", community="public")
 
 # get a single value
 >>> uptime = snmp.get("1.3.6.1.2.1.1.3.0")
@@ -35,17 +35,17 @@ datetime.timedelta(412, 29152)
 >>>     },
 >>> )
 >>>
->>> table.columns["username"]
+>>> wifi_clients.columns["username"]
 ("jdoe", "rms", "bwayne")
->>> table.columns["protocol"]
+>>> wifi_clients.columns["protocol"]
 ("802.11g", "802.11n", "802.11n")
->>> table.rows[0]["username"]
+>>> wifi_clients.rows[0]["username"]
 "jdoe"
 
 # conveniently count column values
->>> table.columns["protocol"]
+>>> wifi_clients.columns["protocol"]
 ("802.11g", "802.11n", "802.11n")
->>> table.columns["protocol"].value_count
+>>> wifi_clients.columns["protocol"].value_count
 {"802.11g": 1, "802.11n": 2}
 
 # helpers for converting MAC and IP addresses
