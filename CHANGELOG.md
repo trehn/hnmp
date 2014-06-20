@@ -1,3 +1,11 @@
+0.2.0
+=====
+
+2014-06-18
+
+* allow setting non-repeaters and max-repetitions for tables
+
+
 0.1.0
 =====
 
