@@ -115,34 +115,52 @@ class SNMP(object):
         return value
 
     def table(self, oid, columns=None, column_value_mapping=None, non_repeaters=0,
-              max_repetitions=20):
+              max_repetitions=20, fetch_all_columns=True):
         """
         Get a table of values with the given OID prefix.
         """
         base_oid = oid.strip(".")
 
-        try:
-            engine_error, pdu_error, pdu_error_index, obj_table = self._cmdgen.bulkCmd(
-                cmdgen.CommunityData(self.community),
-                cmdgen.UdpTransportTarget((self.host, self.port)),
-                non_repeaters,
-                max_repetitions,
-                oid,
-            )
+        if not fetch_all_columns and not columns:
+            raise ValueError("please use the columns argument to "
+                             "indicate which columns to fetch")
 
-        except Exception as e:
-            raise SNMPError(e)
-        if engine_error:
-            raise SNMPError(engine_error)
-        if pdu_error:
-            raise SNMPError(pdu_error.prettyPrint())
+        if fetch_all_columns:
+            columns_to_fetch = [""]
+        else:
+            columns_to_fetch = ["." + str(col_id) for col_id in columns.keys()]
 
-        while not obj_table[-1][0][0].prettyPrint().lstrip(".").startswith(base_oid + "."):
-            obj_table.pop()
+        full_obj_table = []
+
+        for col in columns_to_fetch:
+            try:
+                engine_error, pdu_error, pdu_error_index, obj_table = self._cmdgen.bulkCmd(
+                    cmdgen.CommunityData(self.community),
+                    cmdgen.UdpTransportTarget((self.host, self.port)),
+                    non_repeaters,
+                    max_repetitions,
+                    oid + col,
+                )
+
+            except Exception as e:
+                raise SNMPError(e)
+            if engine_error:
+                raise SNMPError(engine_error)
+            if pdu_error:
+                raise SNMPError(pdu_error.prettyPrint())
+
+            # remove any trailing rows from the next subtree
+            while not obj_table[-1][0][0].prettyPrint().lstrip(".").startswith(
+                base_oid + col + "."
+            ):
+                obj_table.pop()
+
+            # append this column to full result
+            full_obj_table += obj_table
 
         t = Table(columns=columns, column_value_mapping=column_value_mapping)
 
-        for row in obj_table:
+        for row in full_obj_table:
             for name, value in row:
                 oid = name.prettyPrint().strip(".")
                 value = _convert_value_to_native(value)
