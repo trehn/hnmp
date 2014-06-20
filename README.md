@@ -69,6 +69,29 @@ pip install hnmp
 FAQ
 ---
 
+### How do the table OIDs work?
+
+Quite often you will find that you need to query a whole table instead of a single value (e.g. a list of network interfaces). This is how the OIDs are organized in a table:
+
+```
+1.3.6.1.4.1.9.9.513.1.1.1.1.11.1.2.3.4.5
+1.3.6.1.4.1.9.9.513.1.1.1.1.11.1.2.3.4.6
+1.3.6.1.4.1.9.9.513.1.1.1.1.11.1.2.3.4.7
+1.3.6.1.4.1.9.9.513.1.1.1.1.12.1.2.3.4.5
+1.3.6.1.4.1.9.9.513.1.1.1.1.12.1.2.3.4.6
+1.3.6.1.4.1.9.9.513.1.1.1.1.12.1.2.3.4.7
+1.3.6.1.4.1.9.9.513.1.1.1.1.12.1.2.3.4.7
+\_____________ ____________/|  \___ ___/
+              │             │      |
+              │             │    Row ID
+              │             │
+              │          Column ID
+              │
+           Base OID
+```
+
+Starting from the base OID (`1.3.6.1.4.1.9.9.513.1.1.1.1` in this example), you will see the different column IDs (`11` and `12` in this example) repeated for every row. Row IDs consist of everything after the column ID. Sometimes these are only sequential single digits, but they can also be made up of multiple numbers. In this example, there are three rows with IDs `1.2.3.4.5`, `1.2.3.4.6`, and `1.2.3.4.7`.
+
 ### Why doesn't HNMP support loading MIB files?
 
 Depending on MIB files would make the calling piece of code harder to distribute (since you need to include the MIBs, which may have some nasty non-free license attached to them). I consider MIB files a means to manually discover OIDs, nothing more. HNMP is biased towards use in scripts rather than full-blown applications. Having to use a library is bad enough for scripts, MIBs would just make your script even more unwieldy.
