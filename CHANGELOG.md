@@ -1,3 +1,11 @@
+0.3.0
+=====
+
+2014-06-20
+
+* allow fetching only specific columns
+
+
 0.2.0
 =====
 
