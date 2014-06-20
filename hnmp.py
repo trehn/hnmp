@@ -150,10 +150,13 @@ class SNMP(object):
                 raise SNMPError(pdu_error.prettyPrint())
 
             # remove any trailing rows from the next subtree
-            while not obj_table[-1][0][0].prettyPrint().lstrip(".").startswith(
-                base_oid + col + "."
-            ):
-                obj_table.pop()
+            try:
+                while not obj_table[-1][0][0].prettyPrint().lstrip(".").startswith(
+                    base_oid + col + "."
+                ):
+                    obj_table.pop()
+            except IndexError:
+                pass
 
             # append this column to full result
             full_obj_table += obj_table
