@@ -33,6 +33,7 @@ datetime.timedelta(412, 29152)
 >>>             6: "802.11n",
 >>>         },
 >>>     },
+>>>     fetch_all_columns=False,  # fetch only named columns (useful with large tables)
 >>> )
 >>>
 >>> wifi_clients.columns["username"]
