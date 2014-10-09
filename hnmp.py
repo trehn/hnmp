@@ -5,11 +5,15 @@ from sys import version_info
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 from pysnmp.proto.rfc1902 import (
     Counter32,
+    Counter64,
     Gauge32,
     Integer,
+    Integer32,
+    Unsigned32,
     IpAddress,
     OctetString,
     TimeTicks,
+    Bits,
 )
 
 
@@ -37,9 +41,15 @@ def _convert_value_to_native(value):
     """
     if isinstance(value, Counter32):
         return int(value.prettyPrint())
+    if isinstance(value, Counter64):
+        return int(value.prettyPrint())
     if isinstance(value, Gauge32):
         return int(value.prettyPrint())
     if isinstance(value, Integer):
+        return int(value.prettyPrint())
+    if isinstance(value, Integer32):
+        return int(value.prettyPrint())
+    if isinstance(value, Unsigned32):
         return int(value.prettyPrint())
     if isinstance(value, IpAddress):
         return str(value.prettyPrint())
@@ -171,6 +181,67 @@ class SNMP(object):
                 t._add_value(int(column), row_id, value)
 
         return t
+
+    def set(self, oid, value, value_type = ''):
+        """
+            Sets a single OID value. If you do not pass value_type hnmp will
+        try to guess the correct type of value. Autodetection now supported
+        only for few some types as:
+            int and float (as Integer, fractional part will be discarded).
+            IPv4 address (as IpAddress).
+            str (as OctetString).
+        Howewer, you can pass any pysnmp.proto.rfc1902 type as third argument
+        to force type recognition.
+        
+        Unfortunately, pysnmp does not support SNMP FLOAT type so please
+        use Integer instead.
+        """
+        if not value_type:
+            if type(value) is int:
+                data = Integer(value)
+            elif type(value) is float:
+                data = Integer(value)
+            elif type(value) is str:
+                # checking for valid IPv4 address
+                if value.replace('.','').strip('1234567890'):
+                    data = OctetString(value) 
+                else:
+                    data = IpAddress(value)
+            else:
+                raise ValueError("Type detection failed." +\
+                                 " Try to specify type by hands.")
+        else:
+            types = {'Integer': Integer, 
+                    'Integer32': Integer32,
+                    'Unsigned32': Unsigned32,
+                    'Gauge32': Gauge32,
+                    'Counter32': Counter32,
+                    'Counter64': Counter64,
+                    'OctetString': OctetString, 
+                    'IpAddress': IpAddress, 
+                    'TimeTicks': TimeTicks, 
+                    'Bits': Bits,
+                    }
+            if not value_type in types:
+                raise ValueError('Type %s is not supported.' % value_type)
+            data = types[value_type](value)
+        try:
+            engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.setCmd(
+                cmdgen.CommunityData(self.community),
+                cmdgen.UdpTransportTarget((self.host, self.port)),
+                (oid, data),
+            )
+            if engine_error:
+                raise SNMPError(engine_error)
+            if pdu_error:
+                raise SNMPError(pdu_error.prettyPrint())
+
+        except Exception as e:
+            raise SNMPError(e)
+
+        _, value = objects[0]
+        value = _convert_value_to_native(value)
+        return value
 
 
 class SNMPError(Exception):
