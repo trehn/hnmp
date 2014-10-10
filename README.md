@@ -58,6 +58,11 @@ datetime.timedelta(412, 29152)
 '74:26:ac:1b:e7:a1'
 >>> ipv4_address(snmp.get("1.3.6.1.4.1.9.9.513.1.1.1.1.11.[...]"))
 '10.1.2.3'
+
+# set a value
+>>> snmp.set("1.2.3.4.5.6.7.8.9.0", "foobar")
+>>> snmp.set("1.2.3.4.5.6.7.8.9.0", "10.1.2.3")  # IPv4 address is converted automatically
+>>> snmp.set("1.2.3.4.5.6.7.8.9.0", 23, value_type='Counter64')  # use explicit type
 ```
 
 Install
