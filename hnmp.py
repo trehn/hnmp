@@ -218,11 +218,11 @@ class SNMP(object):
         please use Integer instead.
         """
         if value_type is None:
-            if type(value) is int:
+            if isinstance(value, int):
                 data = Integer(value)
-            elif type(value) is float:
+            elif isinstance(value, float):
                 data = Integer(value)
-            elif type(value) is str:
+            elif isinstance(value, str):
                 if is_ipv4_address(value):
                     data = IpAddress(value)
                 else:
