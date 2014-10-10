@@ -234,6 +234,7 @@ class SNMP(object):
             if not value_type in TYPES:
                 raise ValueError('Type %s is not supported.' % value_type)
             data = TYPES[value_type](value)
+
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.setCmd(
                 cmdgen.CommunityData(self.community),
@@ -244,7 +245,6 @@ class SNMP(object):
                 raise SNMPError(engine_error)
             if pdu_error:
                 raise SNMPError(pdu_error.prettyPrint())
-
         except Exception as e:
             raise SNMPError(e)
 
