@@ -98,6 +98,18 @@ def ipv4_address(string):
         return ".".join([str(ord(c)) for c in string])
 
 
+def is_ipv4_address(value):
+    try:
+        c1, c2, c3, c4 = value.split(".")
+        assert 0 <= int(c1) <= 255
+        assert 0 <= int(c2) <= 255
+        assert 0 <= int(c3) <= 255
+        assert 0 <= int(c4) <= 255
+        return True
+    except:
+        return False
+
+
 def mac_address(string):
     if version_info >= (3,0):
         return ":".join([hex(c).lstrip("0x").zfill(2) for c in string])
@@ -215,11 +227,10 @@ class SNMP(object):
             elif type(value) is float:
                 data = Integer(value)
             elif type(value) is str:
-                # checking for valid IPv4 address
-                if value.replace('.','').strip('1234567890'):
-                    data = OctetString(value) 
-                else:
+                if is_ipv4_address(value):
                     data = IpAddress(value)
+                else:
+                    data = OctetString(value)
             else:
                 raise ValueError("Type detection failed." +\
                                  " Try to specify type by hands.")
