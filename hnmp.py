@@ -16,6 +16,19 @@ from pysnmp.proto.rfc1902 import (
     Bits,
 )
 
+TYPES = {
+    'Bits': Bits,
+    'Counter32': Counter32,
+    'Counter64': Counter64,
+    'Gauge32': Gauge32,
+    'Integer': Integer,
+    'Integer32': Integer32,
+    'IpAddress': IpAddress,
+    'OctetString': OctetString,
+    'TimeTicks': TimeTicks,
+    'Unsigned32': Unsigned32,
+}
+
 
 def cached_property(prop):
     """
@@ -211,20 +224,9 @@ class SNMP(object):
                 raise ValueError("Type detection failed." +\
                                  " Try to specify type by hands.")
         else:
-            types = {'Integer': Integer, 
-                    'Integer32': Integer32,
-                    'Unsigned32': Unsigned32,
-                    'Gauge32': Gauge32,
-                    'Counter32': Counter32,
-                    'Counter64': Counter64,
-                    'OctetString': OctetString, 
-                    'IpAddress': IpAddress, 
-                    'TimeTicks': TimeTicks, 
-                    'Bits': Bits,
-                    }
-            if not value_type in types:
+            if not value_type in TYPES:
                 raise ValueError('Type %s is not supported.' % value_type)
-            data = types[value_type](value)
+            data = TYPES[value_type](value)
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.setCmd(
                 cmdgen.CommunityData(self.community),
