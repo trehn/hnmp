@@ -4,7 +4,6 @@ from sys import version_info
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 from pysnmp.proto.rfc1902 import (
-    Bits,
     Counter32,
     Counter64,
     Gauge32,
@@ -17,7 +16,6 @@ from pysnmp.proto.rfc1902 import (
 )
 
 TYPES = {
-    'Bits': Bits,
     'Counter32': Counter32,
     'Counter64': Counter64,
     'Gauge32': Gauge32,
@@ -215,9 +213,6 @@ class SNMP(object):
         * int and float (as Integer, fractional part will be discarded)
         * IPv4 address (as IpAddress)
         * str (as OctetString)
-
-        Howewer, you can pass any pysnmp.proto.rfc1902 type  to force
-        type recognition.
 
         Unfortunately, pysnmp does not support the SNMP FLOAT type so
         please use Integer instead.
