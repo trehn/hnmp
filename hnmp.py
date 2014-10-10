@@ -4,16 +4,16 @@ from sys import version_info
 
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 from pysnmp.proto.rfc1902 import (
+    Bits,
     Counter32,
     Counter64,
     Gauge32,
     Integer,
     Integer32,
-    Unsigned32,
     IpAddress,
     OctetString,
     TimeTicks,
-    Bits,
+    Unsigned32,
 )
 
 TYPES = {
