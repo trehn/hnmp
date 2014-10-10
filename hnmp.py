@@ -228,11 +228,17 @@ class SNMP(object):
                 else:
                     data = OctetString(value)
             else:
-                raise ValueError("Type detection failed." +\
-                                 " Try to specify type by hands.")
+                raise TypeError(
+                    "Unable to autodetect type. Please pass one of "
+                    "these strings as the value_type keyword arg: "
+                    ", ".join(TYPES.keys())
+                )
         else:
             if not value_type in TYPES:
-                raise ValueError('Type %s is not supported.' % value_type)
+                raise ValueError("'{}' is not one of the supported types: {}".format(
+                    value_type,
+                    ", ".join(TYPES.keys())
+                ))
             data = TYPES[value_type](value)
 
         try:
