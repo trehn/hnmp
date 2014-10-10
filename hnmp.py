@@ -209,17 +209,18 @@ class SNMP(object):
 
     def set(self, oid, value, value_type=None):
         """
-            Sets a single OID value. If you do not pass value_type hnmp will
-        try to guess the correct type of value. Autodetection now supported
-        only for few some types as:
-            int and float (as Integer, fractional part will be discarded).
-            IPv4 address (as IpAddress).
-            str (as OctetString).
-        Howewer, you can pass any pysnmp.proto.rfc1902 type as third argument
-        to force type recognition.
-        
-        Unfortunately, pysnmp does not support SNMP FLOAT type so please
-        use Integer instead.
+        Sets a single OID value. If you do not pass value_type hnmp will
+        try to guess the correct type. Autodetection is supported for:
+
+        * int and float (as Integer, fractional part will be discarded)
+        * IPv4 address (as IpAddress)
+        * str (as OctetString)
+
+        Howewer, you can pass any pysnmp.proto.rfc1902 type  to force
+        type recognition.
+
+        Unfortunately, pysnmp does not support the SNMP FLOAT type so
+        please use Integer instead.
         """
         if value_type is None:
             if type(value) is int:
