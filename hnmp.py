@@ -207,7 +207,7 @@ class SNMP(object):
 
         return t
 
-    def set(self, oid, value, value_type = ''):
+    def set(self, oid, value, value_type=None):
         """
             Sets a single OID value. If you do not pass value_type hnmp will
         try to guess the correct type of value. Autodetection now supported
@@ -221,7 +221,7 @@ class SNMP(object):
         Unfortunately, pysnmp does not support SNMP FLOAT type so please
         use Integer instead.
         """
-        if not value_type:
+        if value_type is None:
             if type(value) is int:
                 data = Integer(value)
             elif type(value) is float:
