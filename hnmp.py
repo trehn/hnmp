@@ -29,7 +29,8 @@ TYPES = {
 
 AUTHPROTOCOLS = {
     'md5': cmdgen.usmHMACMD5AuthProtocol,
-    'sha': cmdgen.usmHMACSHAAuthProtocol
+    'sha': cmdgen.usmHMACSHAAuthProtocol,
+    'noauth': cmdgen.usmNoAuthProtocol
 }
 
 PRIVPROTOCOLS = {
@@ -37,7 +38,8 @@ PRIVPROTOCOLS = {
     'aes192': cmdgen.usmAesCfb192Protocol,
     'aes128': cmdgen.usmAesCfb128Protocol,
     '3des': cmdgen.usm3DESEDEPrivProtocol,
-    'des': cmdgen.usmDESPrivProtocol
+    'des': cmdgen.usmDESPrivProtocol,
+    'nopriv': cmdgen.usmNoPrivProtocol
 }
 
 
@@ -147,8 +149,8 @@ class SNMP(object):
 
     def _get_snmp_security(self):
         if self.version == 3:
-            authproto = AUTHPROTOCOLS.get(self.authproto, cmdgen.usmNoAuthProtocol)
-            privproto = PRIVPROTOCOLS.get(self.privproto, cmdgen.usmNoPrivProtocol)
+            authproto = AUTHPROTOCOLS.get(self.authproto, AUTHPROTOCOLS['noauth'])
+            privproto = PRIVPROTOCOLS.get(self.privproto, PRIVPROTOCOLS['nopriv'])
 
             if len(self.authkey) == 0:
                 authproto = None
