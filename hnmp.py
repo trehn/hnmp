@@ -119,19 +119,63 @@ class SNMP(object):
     """
     Represents a 'connection' to a certain SNMP host.
     """
-    def __init__(self, host, port=161, community="public"):
+    def __init__(self, host, port=161, community="public", version=2, username="", authproto="sha", authkey="", privproto="aes128", privkey=""):
         self._cmdgen = cmdgen.CommandGenerator()
         self.host = host
         self.port = port
         self.community = community
+        self.version = version
+        self.username = username
+        self.authproto = authproto
+        self.authkey = authkey
+        self.privproto = privproto
+        self.privkey = privkey
+
+    def _get_snmp_security(self):
+        if self.version == 3:
+            authprotocols = {
+                'md5': cmdgen.usmHMACMD5AuthProtocol,
+                'sha': cmdgen.usmHMACSHAAuthProtocol
+            }
+
+            privprotocols = {
+                 'aes256': cmdgen.usmAesCfb256Protocol,
+                 'aes192': cmdgen.usmAesCfb192Protocol,
+                 'aes128': cmdgen.usmAesCfb128Protocol,
+                 'aes': cmdgen.usmAesCfb128Protocol,
+                 '3des': cmdgen.usm3DESEDEPrivProtocol,
+                 'des': cmdgen.usmDESPrivProtocol
+            }
+
+            authproto = authprotocols.get(self.authproto, cmdgen.usmNoAuthProtocol)
+            privproto = privprotocols.get(self.privproto, cmdgen.usmNoPrivProtocol)
+
+            if len(self.authkey) == 0:
+                authproto = None
+                authkey = None
+            else:
+                authkey = self.authkey
+
+            if len(self.privkey) == 0:
+                privproto = None
+                privkey = None
+            else:
+                privkey = self.privkey
+
+            return cmdgen.UsmUserData(self.username, authKey=authkey, privKey=privkey, authProtocol=authproto, privProtocol=privproto)
+        # Default to version 2c
+        else:
+            return cmdgen.CommunityData(self.community)
 
     def get(self, oid):
         """
         Get a single OID value.
         """
+        snmpsecurity = self._get_snmp_security()
+
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.getCmd(
-                cmdgen.CommunityData(self.community),
+                snmpsecurity,
                 cmdgen.UdpTransportTarget((self.host, self.port)),
                 oid,
             )
@@ -159,6 +203,8 @@ class SNMP(object):
         Unfortunately, pysnmp does not support the SNMP FLOAT type so
         please use Integer instead.
         """
+        snmpsecurity = self._get_snmp_security()
+
         if value_type is None:
             if isinstance(value, int):
                 data = Integer(value)
@@ -185,7 +231,7 @@ class SNMP(object):
 
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.setCmd(
-                cmdgen.CommunityData(self.community),
+                snmpsecurity,
                 cmdgen.UdpTransportTarget((self.host, self.port)),
                 (oid, data),
             )
