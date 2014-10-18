@@ -27,6 +27,19 @@ TYPES = {
     'Unsigned32': Unsigned32,
 }
 
+AUTHPROTOCOLS = {
+    'md5': cmdgen.usmHMACMD5AuthProtocol,
+    'sha': cmdgen.usmHMACSHAAuthProtocol
+}
+
+PRIVPROTOCOLS = {
+    'aes256': cmdgen.usmAesCfb256Protocol,
+    'aes192': cmdgen.usmAesCfb192Protocol,
+    'aes128': cmdgen.usmAesCfb128Protocol,
+    '3des': cmdgen.usm3DESEDEPrivProtocol,
+    'des': cmdgen.usmDESPrivProtocol
+}
+
 
 def cached_property(prop):
     """
@@ -119,7 +132,8 @@ class SNMP(object):
     """
     Represents a 'connection' to a certain SNMP host.
     """
-    def __init__(self, host, port=161, community="public", version=2, username="", authproto="sha", authkey="", privproto="aes128", privkey=""):
+    def __init__(self, host, port=161, community="public", version=2,
+                 username="", authproto="sha", authkey="", privproto="aes128", privkey=""):
         self._cmdgen = cmdgen.CommandGenerator()
         self.host = host
         self.port = port
@@ -133,22 +147,8 @@ class SNMP(object):
 
     def _get_snmp_security(self):
         if self.version == 3:
-            authprotocols = {
-                'md5': cmdgen.usmHMACMD5AuthProtocol,
-                'sha': cmdgen.usmHMACSHAAuthProtocol
-            }
-
-            privprotocols = {
-                 'aes256': cmdgen.usmAesCfb256Protocol,
-                 'aes192': cmdgen.usmAesCfb192Protocol,
-                 'aes128': cmdgen.usmAesCfb128Protocol,
-                 'aes': cmdgen.usmAesCfb128Protocol,
-                 '3des': cmdgen.usm3DESEDEPrivProtocol,
-                 'des': cmdgen.usmDESPrivProtocol
-            }
-
-            authproto = authprotocols.get(self.authproto, cmdgen.usmNoAuthProtocol)
-            privproto = privprotocols.get(self.privproto, cmdgen.usmNoPrivProtocol)
+            authproto = AUTHPROTOCOLS.get(self.authproto, cmdgen.usmNoAuthProtocol)
+            privproto = PRIVPROTOCOLS.get(self.privproto, cmdgen.usmNoPrivProtocol)
 
             if len(self.authkey) == 0:
                 authproto = None
@@ -162,7 +162,8 @@ class SNMP(object):
             else:
                 privkey = self.privkey
 
-            return cmdgen.UsmUserData(self.username, authKey=authkey, privKey=privkey, authProtocol=authproto, privProtocol=privproto)
+            return cmdgen.UsmUserData(self.username, authKey=authkey, privKey=privkey,
+                                      authProtocol=authproto, privProtocol=privproto)
         # Default to version 2c
         else:
             return cmdgen.CommunityData(self.community)
