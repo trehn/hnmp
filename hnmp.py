@@ -30,7 +30,7 @@ TYPES = {
 AUTHPROTOCOLS = {
     'md5': cmdgen.usmHMACMD5AuthProtocol,
     'sha': cmdgen.usmHMACSHAAuthProtocol,
-    'noauth': cmdgen.usmNoAuthProtocol
+    'noauth': cmdgen.usmNoAuthProtocol,
 }
 
 PRIVPROTOCOLS = {
@@ -39,7 +39,7 @@ PRIVPROTOCOLS = {
     'aes128': cmdgen.usmAesCfb128Protocol,
     '3des': cmdgen.usm3DESEDEPrivProtocol,
     'des': cmdgen.usmDESPrivProtocol,
-    'nopriv': cmdgen.usmNoPrivProtocol
+    'nopriv': cmdgen.usmNoPrivProtocol,
 }
 
 
