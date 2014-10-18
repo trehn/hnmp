@@ -13,7 +13,16 @@ Usage
 ```python
 >>> from hnmp import SNMP
 >>>
->>> snmp = SNMP("example.com", community="public")
+>>> snmp = SNMP("example.com", community="public")  # v2c
+>>> snmp = SNMP(
+...    "example.com",
+...    version=3,
+...    username="jdoe",
+...    authproto="sha",
+...    authkey="secret",
+...    privproto="aes128",
+...    privkey="secret",
+... )  # v3
 
 # get a single value
 >>> uptime = snmp.get("1.3.6.1.2.1.1.3.0")
@@ -100,10 +109,6 @@ Starting from the base OID (`1.3.6.1.4.1.9.9.513.1.1.1.1` in this example), you 
 ### Why doesn't HNMP support loading MIB files?
 
 Depending on MIB files would make the calling piece of code harder to distribute (since you need to include the MIBs, which may have some nasty non-free license attached to them). I consider MIB files a means to manually discover OIDs, nothing more. HNMP is biased towards use in scripts rather than full-blown applications. Having to use a library is bad enough for scripts, MIBs would just make your script even more unwieldy.
-
-### Why doesn't HNMP support SNMPv3?
-
-The need just hasn't arisen yet. Version 2c works pretty well for my purposes.
 
 ------------------------------------------------------------------------
 
