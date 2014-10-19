@@ -254,6 +254,7 @@ class SNMP(object):
         """
         Get a table of values with the given OID prefix.
         """
+        snmpsecurity = self._get_snmp_security()
         base_oid = oid.strip(".")
 
         if not fetch_all_columns and not columns:
@@ -270,7 +271,7 @@ class SNMP(object):
         for col in columns_to_fetch:
             try:
                 engine_error, pdu_error, pdu_error_index, obj_table = self._cmdgen.bulkCmd(
-                    cmdgen.CommunityData(self.community),
+                    snmpsecurity,
                     cmdgen.UdpTransportTarget((self.host, self.port)),
                     non_repeaters,
                     max_repetitions,
