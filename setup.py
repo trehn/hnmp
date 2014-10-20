@@ -6,7 +6,7 @@ except ImportError:
 
 setup(
     name="hnmp",
-    version="0.3.0",
+    version="0.4.0",
     description="High-level Python SNMP library",
     long_description="HNMP is a high-level Python library to ease the pain of retrieving and processing data from SNMP-capable devices such as network switches, routers, and printers. It's not meant to provide everything SNMP has to offer, but to get rid of most of the suck inherent to writing Munin or Icinga plugins that process SNMP data.",
     author="Torsten Rehn",

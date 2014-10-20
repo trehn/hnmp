@@ -1,3 +1,12 @@
+0.4.0
+=====
+
+2014-10-20
+
+* added SNMP.set()
+* added support for SNMP v3
+
+
 0.3.0
 =====
 
