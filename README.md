@@ -5,7 +5,7 @@ HNMP is meant to be used like this:
 1. acquire MIB files (optional, some luck required)
 2. use a MIB browser application like [this freeish and cross-platform one](http://ireasoning.com/mibbrowser.shtml) to figure out the numeric OIDs you're interested in
 3. use HNMP to retrieve your data and do some light processing
-4. put man on moon :rocket:
+4. put human on Mars :rocket:
 
 Usage
 -----
