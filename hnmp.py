@@ -134,11 +134,13 @@ class SNMP(object):
     """
     Represents a 'connection' to a certain SNMP host.
     """
-    def __init__(self, host, port=161, community="public", version=2,
+    def __init__(self, host, port=161, timeout=1, retries=5, community="public", version=2,
                  username="", authproto="sha", authkey="", privproto="aes128", privkey=""):
         self._cmdgen = cmdgen.CommandGenerator()
         self.host = host
         self.port = port
+        self.timeout = timeout
+        self.retries = retries
         self.community = community
         self.version = version
         self.username = username
@@ -179,7 +181,8 @@ class SNMP(object):
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.getCmd(
                 snmpsecurity,
-                cmdgen.UdpTransportTarget((self.host, self.port)),
+                cmdgen.UdpTransportTarget((self.host, self.port), timeout=self.timeout,
+                                          retries=self.retries),
                 oid,
             )
 
@@ -235,7 +238,8 @@ class SNMP(object):
         try:
             engine_error, pdu_error, pdu_error_index, objects = self._cmdgen.setCmd(
                 snmpsecurity,
-                cmdgen.UdpTransportTarget((self.host, self.port)),
+                cmdgen.UdpTransportTarget((self.host, self.port), timeout=self.timeout,
+                                          retries=self.retries),
                 (oid, data),
             )
             if engine_error:
@@ -272,7 +276,8 @@ class SNMP(object):
             try:
                 engine_error, pdu_error, pdu_error_index, obj_table = self._cmdgen.bulkCmd(
                     snmpsecurity,
-                    cmdgen.UdpTransportTarget((self.host, self.port)),
+                    cmdgen.UdpTransportTarget((self.host, self.port), timeout=self.timeout,
+                                              retries=self.retries),
                     non_repeaters,
                     max_repetitions,
                     oid + col,
