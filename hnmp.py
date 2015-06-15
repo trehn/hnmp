@@ -313,6 +313,18 @@ class SNMP(object):
 
         return t
 
+    def rows(self, *args, **kwargs):
+        """
+        Return table as list of rows where each row is a tuple of columns.
+
+        ``SNMP.rows()`` takes the same arguments as ``SNMP.table()``.
+
+        """
+
+        table = self.table(*args, **kwargs)
+        rows = zip(*table.columns.values())
+        return rows
+
 
 class SNMPError(Exception):
     pass
