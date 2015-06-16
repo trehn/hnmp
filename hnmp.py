@@ -334,7 +334,7 @@ class Table(object):
         try:
             self._rows[row_id][column] = value
         except KeyError:
-            self._rows[row_id] = {column: value}
+            self._rows[row_id] = OrderedDict({column: value})
 
     @cached_property
     def columns(self):
