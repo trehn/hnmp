@@ -322,7 +322,14 @@ class Table(object):
     def __init__(self, columns=None, column_value_mapping=None):
         self._column_aliases = {} if columns is None else columns
         self._column_value_mapping = {} if column_value_mapping is None else column_value_mapping
-        self._rows = {}
+
+        # OrderedDict() preserves order as returned by SNMP agent but it is only 
+        # available since Python 2.7
+        try:
+            import collections
+            self._rows = collections.OrderedDict()
+        except ImportError:
+            self._rows = {}
 
     def _add_value(self, raw_column, row_id, value):
         column = self._column_aliases.get(raw_column, raw_column)
