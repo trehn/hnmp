@@ -52,7 +52,7 @@ def cached_property(prop):
     def cache_wrapper(self):
         if not hasattr(self, "_cache"):
             self._cache = {}
-        if not prop.__name__ in self._cache:
+        if prop.__name__ not in self._cache:
             return_value = prop(self)
             if isgenerator(return_value):
                 return_value = tuple(return_value)
@@ -105,7 +105,7 @@ class CountingTuple(tuple):
 
 
 def ipv4_address(string):
-    if version_info >= (3,0):
+    if version_info >= (3, 0):
         return ".".join([str(c) for c in string])
     else:
         return ".".join([str(ord(c)) for c in string])
@@ -124,7 +124,7 @@ def is_ipv4_address(value):
 
 
 def mac_address(string):
-    if version_info >= (3,0):
+    if version_info >= (3, 0):
         return ":".join([hex(c).lstrip("0x").zfill(2) for c in string])
     else:
         return ":".join([hex(ord(c)).lstrip("0x").zfill(2) for c in string])
@@ -228,7 +228,7 @@ class SNMP(object):
                     ", ".join(TYPES.keys())
                 )
         else:
-            if not value_type in TYPES:
+            if value_type not in TYPES:
                 raise ValueError("'{}' is not one of the supported types: {}".format(
                     value_type,
                     ", ".join(TYPES.keys())
