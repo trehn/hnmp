@@ -151,7 +151,9 @@ class SNMP(object):
         self.privkey = privkey
 
     def _get_snmp_security(self):
-        if self.version == 3:
+        if self.version == 1:
+            return cmdgen.CommunityData(self.community, mpModel=0)
+        elif self.version == 3:
             authproto = AUTHPROTOCOLS.get(self.authproto, AUTHPROTOCOLS['noauth'])
             privproto = PRIVPROTOCOLS.get(self.privproto, PRIVPROTOCOLS['nopriv'])
 
@@ -171,7 +173,7 @@ class SNMP(object):
                                       authProtocol=authproto, privProtocol=privproto)
         # Default to version 2c
         else:
-            return cmdgen.CommunityData(self.community)
+            return cmdgen.CommunityData(self.community, mpModel=1)
 
     def get(self, oid):
         """
