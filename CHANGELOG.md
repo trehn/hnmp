@@ -1,3 +1,13 @@
+0.5.0
+=====
+
+2015-08-16
+
+* added configurable timeout and retries
+* added support for SNMP v1
+* preserve order of returned data
+
+
 0.4.0
 =====
 
