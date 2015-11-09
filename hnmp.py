@@ -295,7 +295,7 @@ class SNMP(object):
 
             # remove any trailing rows from the next subtree
             try:
-                while not obj_table[-1][0][0].prettyPrint().lstrip(".").startswith(
+                while not str(obj_table[-1][0][0].getOid()).lstrip(".").startswith(
                     base_oid + col + "."
                 ):
                     obj_table.pop()
@@ -309,7 +309,7 @@ class SNMP(object):
 
         for row in full_obj_table:
             for name, value in row:
-                oid = name.prettyPrint().strip(".")
+                oid = str(name.getOid()).strip(".")
                 value = _convert_value_to_native(value)
                 column, row_id = oid[len(base_oid) + 1:].split(".", 1)
                 t._add_value(int(column), row_id, value)
