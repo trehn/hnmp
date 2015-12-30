@@ -1,3 +1,11 @@
+0.5.1
+=====
+
+2015-12-30
+
+* fixed empty tables being returned for some OIDs
+
+
 0.5.0
 =====
 
