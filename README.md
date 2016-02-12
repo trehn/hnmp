@@ -29,9 +29,10 @@ Usage
 >>> uptime
 datetime.timedelta(412, 29152)
 
-# build a table
+# build a table from MIB AIRESPACE-WIRELESS-MIB::bsnMobileStationEntry.
+>>> bsnMobileStationEntryOID = "1.3.6.1.4.1.14179.2.1.4.1"
 >>> wifi_clients = snmp.table(
->>>     "1.3.6.1.4.1.14179.2.1.4.1",
+>>>     bsnMobileStationEntryOID,
 >>>     columns={
 >>>         3: "username",
 >>>         25: "protocol",
