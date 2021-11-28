@@ -113,4 +113,4 @@ Depending on MIB files would make the calling piece of code harder to distribute
 
 ------------------------------------------------------------------------
 
-![PyPI version](http://img.shields.io/pypi/v/hnmp.svg) &nbsp; ![Python 2.7](http://img.shields.io/badge/Python-2.7-green.svg) &nbsp; ![Python 3.x](http://img.shields.io/badge/Python-3.x-green.svg) &nbsp; ![PyPI license](http://img.shields.io/badge/License-ISC-red.svg)
+![PyPI version](http://img.shields.io/pypi/v/hnmp.svg) &nbsp; ![Python 3](http://img.shields.io/pypi/pyversions/hnmp.svg) &nbsp; ![ISC license](http://img.shields.io/badge/License-ISC-red.svg)
