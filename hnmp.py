@@ -120,7 +120,7 @@ def is_ipv4_address(value):
         assert 0 <= int(c3) <= 255
         assert 0 <= int(c4) <= 255
         return True
-    except:
+    except Exception:
         return False
 
 
